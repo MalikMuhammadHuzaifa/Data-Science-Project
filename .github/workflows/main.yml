@@ -1,0 +1,39 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+# Load the stock price data into a Pandas dataframe
+df = pd.read_csv('stock_data.csv')
+
+# Select the 'Close' column as the target variable
+y = df['Close']
+
+# Select the 'Date' and 'Volume' columns as the input features
+X = df[['Date', 'Volume']]
+
+# Convert the 'Date' column to datetime format
+X['Date'] = pd.to_datetime(X['Date'])
+
+# Extract the year and month from the 'Date' column and add them as new columns
+X['Year'] = X['Date'].dt.year
+X['Month'] = X['Date'].dt.month
+
+# Drop the 'Date' column
+X = X.drop(columns=['Date'])
+
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Fit a linear regression model to the training data
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Use the model to make predictions on the test data
+predictions = model.predict(X_test)
+
+# Calculate the mean squared error between the predicted and actual values
+mse = mean_squared_error(y_test, predictions)
+
+# Print the mean squared error
+print(f'Mean Squared Error: {mse}')
